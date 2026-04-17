@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#FBF8F2">
 <title>Gatari Product Scoring Engine</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
@@ -15,19 +14,16 @@
 </head>
 <body>
 
-<!-- MOBILE TOP BAR -->
 <div class="mobile-topbar">
   <div class="mobile-topbar-title">🌿 Gatari</div>
-  <button class="mobile-menu-btn" id="menuBtn" onclick="toggleDrawer()" aria-label="Menu">
+  <button class="mobile-menu-btn" id="menuBtn" onclick="toggleDrawer()">
     <span></span><span></span><span></span>
   </button>
 </div>
 
-<!-- DRAWER OVERLAY -->
 <div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
 
 <div class="app">
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <h1>🌿 Gatari</h1>
@@ -37,7 +33,9 @@
       <button class="nav-item active" onclick="navigate('dashboard');closeDrawer()"><span class="icon">🏠</span> Dashboard</button>
       <button class="nav-item" onclick="navigate('scoring');closeDrawer()"><span class="icon">🎯</span> Product Scoring</button>
       <button class="nav-item" onclick="navigate('products');closeDrawer()"><span class="icon">📦</span> Product List</button>
+      <button class="nav-item" onclick="navigate('recommend');closeDrawer()"><span class="icon">💡</span> Rekomendasi</button>
       <button class="nav-item" onclick="navigate('bundling');closeDrawer()"><span class="icon">🎁</span> Bundling Engine</button>
+      <button class="nav-item" onclick="navigate('marketing');closeDrawer()"><span class="icon">📣</span> Agresif Marketing</button>
       <button class="nav-item" onclick="navigate('settings');closeDrawer()"><span class="icon">⚙️</span> Stage Settings</button>
     </nav>
     <div class="sidebar-footer">
@@ -45,39 +43,35 @@
         <span class="conn-dot" id="connDot"></span>
         <span id="connLabel">Menghubungkan...</span>
       </div>
-      <div class="text-sm text-muted mt-4">v2.2 · AI + Sheets</div>
+      <div class="text-sm text-muted mt-4">v2.3 · AI + Sheets</div>
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main class="main" id="main-content"></main>
 </div>
 
-<!-- BOTTOM NAV (mobile only) -->
+<!-- BOTTOM NAV -->
 <nav class="bottom-nav">
   <div class="bottom-nav-inner">
     <button class="bottom-nav-item active" id="bn-dashboard" onclick="navigate('dashboard')">
-      <span class="bn-icon">🏠</span>Dashboard
+      <span class="bn-icon">🏠</span>Home
     </button>
     <button class="bottom-nav-item" id="bn-scoring" onclick="navigate('scoring')">
       <span class="bn-icon">🎯</span>Scoring
     </button>
-    <button class="bottom-nav-item" id="bn-products" onclick="navigate('products')">
-      <span class="bn-icon">📦</span>Produk
+    <button class="bottom-nav-item" id="bn-recommend" onclick="navigate('recommend')">
+      <span class="bn-icon">💡</span>Rekomen
     </button>
     <button class="bottom-nav-item" id="bn-bundling" onclick="navigate('bundling')">
       <span class="bn-icon">🎁</span>Bundle
     </button>
-    <button class="bottom-nav-item" id="bn-settings" onclick="navigate('settings')">
-      <span class="bn-icon">⚙️</span>Setting
+    <button class="bottom-nav-item" id="bn-marketing" onclick="navigate('marketing')">
+      <span class="bn-icon">📣</span>Marketing
     </button>
   </div>
 </nav>
 
-<!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
-
-<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" style="display:none">
   <div class="modal" id="modalBox"></div>
 </div>
@@ -86,49 +80,24 @@
 <script src="api.js"></script>
 <script src="engine.js"></script>
 <script src="pages.js"></script>
+<script src="recommend.js"></script>
+<script src="marketing.js"></script>
 <script src="app.js"></script>
-
 <script>
-// Mobile drawer
 function toggleDrawer() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('drawerOverlay');
-  const btn = document.getElementById('menuBtn');
-  const isOpen = sidebar.classList.contains('open');
-  if (isOpen) { closeDrawer(); }
-  else {
-    sidebar.classList.add('open');
-    overlay.classList.add('show');
-    btn.classList.add('open');
-  }
+  const s=document.getElementById('sidebar'),o=document.getElementById('drawerOverlay'),b=document.getElementById('menuBtn');
+  const open=s.classList.contains('open');
+  if(open){closeDrawer();}else{s.classList.add('open');o.classList.add('show');b.classList.add('open');}
 }
 function closeDrawer() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('drawerOverlay');
-  const btn = document.getElementById('menuBtn');
-  sidebar.classList.remove('open');
-  overlay.classList.remove('show');
-  btn.classList.remove('open');
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('drawerOverlay').classList.remove('show');
+  document.getElementById('menuBtn').classList.remove('open');
 }
-
-// Update bottom nav active state
-const _origNavigate = typeof navigate !== 'undefined' ? navigate : null;
-document.addEventListener('DOMContentLoaded', function() {
-  const pages = ['dashboard','scoring','products','bundling','settings'];
-  pages.forEach(p => {
-    const el = document.getElementById('bn-' + p);
-    if (el) el.addEventListener('click', function() {
-      document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
-      this.classList.add('active');
-    });
-  });
-});
-
-// Patch navigate to also update bottom nav
 window._navPatch = function(page) {
-  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
-  const el = document.getElementById('bn-' + page);
-  if (el) el.classList.add('active');
+  document.querySelectorAll('.bottom-nav-item').forEach(b=>b.classList.remove('active'));
+  const el=document.getElementById('bn-'+page);
+  if(el)el.classList.add('active');
 };
 </script>
 </body>
