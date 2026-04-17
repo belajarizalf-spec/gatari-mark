@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gatari Product Scoring Engine</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h1>🌿 Gatari</h1>
+      <span>Scoring Engine</span>
+    </div>
+    <nav class="sidebar-nav">
+      <button class="nav-item active" onclick="navigate('dashboard')"><span class="icon">🏠</span> Dashboard</button>
+      <button class="nav-item" onclick="navigate('scoring')"><span class="icon">🎯</span> Product Scoring</button>
+      <button class="nav-item" onclick="navigate('products')"><span class="icon">📦</span> Product List</button>
+      <button class="nav-item" onclick="navigate('bundling')"><span class="icon">🎁</span> Bundling Engine</button>
+      <button class="nav-item" onclick="navigate('settings')"><span class="icon">⚙️</span> Stage Settings</button>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="conn-status" id="connStatus">
+        <span class="conn-dot" id="connDot"></span>
+        <span id="connLabel">Menghubungkan...</span>
+      </div>
+      <div class="text-sm text-muted mt-4">v2.1 · AI + Sheets</div>
+    </div>
+  </aside>
+  <main class="main" id="main-content"></main>
+</div>
+
+<div class="notif" id="notif"></div>
+<div class="modal-overlay" id="modalOverlay" style="display:none">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<script src="config.js"></script>
+<script src="api.js"></script>
+<script src="engine.js"></script>
+<script src="pages.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
