@@ -19,6 +19,7 @@ let state = {
 
 // ── NAVIGATION ────────────────────────────────────────────────
 function navigate(page) {
+  if (window._navPatch) window._navPatch(page);
   state.currentPage = page;
   document.querySelectorAll('.nav-item').forEach((el,i)=>{
     el.classList.toggle('active',['dashboard','scoring','products','bundling','settings'][i]===page);

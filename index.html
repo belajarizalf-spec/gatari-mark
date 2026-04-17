@@ -2,7 +2,11 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#FBF8F2">
 <title>Gatari Product Scoring Engine</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌿</text></svg>">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -11,31 +15,69 @@
 </head>
 <body>
 
+<!-- MOBILE TOP BAR -->
+<div class="mobile-topbar">
+  <div class="mobile-topbar-title">🌿 Gatari</div>
+  <button class="mobile-menu-btn" id="menuBtn" onclick="toggleDrawer()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+
 <div class="app">
-  <aside class="sidebar">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <h1>🌿 Gatari</h1>
       <span>Scoring Engine</span>
     </div>
     <nav class="sidebar-nav">
-      <button class="nav-item active" onclick="navigate('dashboard')"><span class="icon">🏠</span> Dashboard</button>
-      <button class="nav-item" onclick="navigate('scoring')"><span class="icon">🎯</span> Product Scoring</button>
-      <button class="nav-item" onclick="navigate('products')"><span class="icon">📦</span> Product List</button>
-      <button class="nav-item" onclick="navigate('bundling')"><span class="icon">🎁</span> Bundling Engine</button>
-      <button class="nav-item" onclick="navigate('settings')"><span class="icon">⚙️</span> Stage Settings</button>
+      <button class="nav-item active" onclick="navigate('dashboard');closeDrawer()"><span class="icon">🏠</span> Dashboard</button>
+      <button class="nav-item" onclick="navigate('scoring');closeDrawer()"><span class="icon">🎯</span> Product Scoring</button>
+      <button class="nav-item" onclick="navigate('products');closeDrawer()"><span class="icon">📦</span> Product List</button>
+      <button class="nav-item" onclick="navigate('bundling');closeDrawer()"><span class="icon">🎁</span> Bundling Engine</button>
+      <button class="nav-item" onclick="navigate('settings');closeDrawer()"><span class="icon">⚙️</span> Stage Settings</button>
     </nav>
     <div class="sidebar-footer">
-      <div class="conn-status" id="connStatus">
+      <div class="conn-status">
         <span class="conn-dot" id="connDot"></span>
         <span id="connLabel">Menghubungkan...</span>
       </div>
-      <div class="text-sm text-muted mt-4">v2.1 · AI + Sheets</div>
+      <div class="text-sm text-muted mt-4">v2.2 · AI + Sheets</div>
     </div>
   </aside>
+
+  <!-- MAIN -->
   <main class="main" id="main-content"></main>
 </div>
 
+<!-- BOTTOM NAV (mobile only) -->
+<nav class="bottom-nav">
+  <div class="bottom-nav-inner">
+    <button class="bottom-nav-item active" id="bn-dashboard" onclick="navigate('dashboard')">
+      <span class="bn-icon">🏠</span>Dashboard
+    </button>
+    <button class="bottom-nav-item" id="bn-scoring" onclick="navigate('scoring')">
+      <span class="bn-icon">🎯</span>Scoring
+    </button>
+    <button class="bottom-nav-item" id="bn-products" onclick="navigate('products')">
+      <span class="bn-icon">📦</span>Produk
+    </button>
+    <button class="bottom-nav-item" id="bn-bundling" onclick="navigate('bundling')">
+      <span class="bn-icon">🎁</span>Bundle
+    </button>
+    <button class="bottom-nav-item" id="bn-settings" onclick="navigate('settings')">
+      <span class="bn-icon">⚙️</span>Setting
+    </button>
+  </div>
+</nav>
+
+<!-- NOTIFICATION -->
 <div class="notif" id="notif"></div>
+
+<!-- MODAL -->
 <div class="modal-overlay" id="modalOverlay" style="display:none">
   <div class="modal" id="modalBox"></div>
 </div>
@@ -45,5 +87,49 @@
 <script src="engine.js"></script>
 <script src="pages.js"></script>
 <script src="app.js"></script>
+
+<script>
+// Mobile drawer
+function toggleDrawer() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('drawerOverlay');
+  const btn = document.getElementById('menuBtn');
+  const isOpen = sidebar.classList.contains('open');
+  if (isOpen) { closeDrawer(); }
+  else {
+    sidebar.classList.add('open');
+    overlay.classList.add('show');
+    btn.classList.add('open');
+  }
+}
+function closeDrawer() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('drawerOverlay');
+  const btn = document.getElementById('menuBtn');
+  sidebar.classList.remove('open');
+  overlay.classList.remove('show');
+  btn.classList.remove('open');
+}
+
+// Update bottom nav active state
+const _origNavigate = typeof navigate !== 'undefined' ? navigate : null;
+document.addEventListener('DOMContentLoaded', function() {
+  const pages = ['dashboard','scoring','products','bundling','settings'];
+  pages.forEach(p => {
+    const el = document.getElementById('bn-' + p);
+    if (el) el.addEventListener('click', function() {
+      document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+});
+
+// Patch navigate to also update bottom nav
+window._navPatch = function(page) {
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('bn-' + page);
+  if (el) el.classList.add('active');
+};
+</script>
 </body>
 </html>
